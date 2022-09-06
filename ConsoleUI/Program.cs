@@ -24,7 +24,6 @@ static void CarAdd(CarManager carManager)
    
 
 
-    //carManager.Delete(new Car { CarId=1002});
     carManager.Add(car1);
     carManager.Add(car2);
 }
