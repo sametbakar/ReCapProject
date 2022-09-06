@@ -2,26 +2,47 @@
 
 
 using Business.Concrete;
+using DataAccess.Concrete.EntityFramework;
 using DataAccess.Concrete.InMemory;
 using Entities.Concrete;
 
 
-Car car1 = new Car { Id = 6, BrandId = 3, ColorId = 3, DailyPrice = 350, Description = "Mercedes C 200", ModelYear = 2022 };
+CarManager carManager = new CarManager(new EfCarDal());
+CarAdd(carManager);
+
+GetCarsByBrandId(carManager);
+
+GetCrasByColorId(carManager);
 
 
-CarManager carManager = new CarManager(new InMemoryCarDal());
 
-carManager.Add(car1);
-
-foreach (var car in carManager.GetAll())
+static void CarAdd(CarManager carManager)
 {
-    Console.WriteLine(car.Description);
+    Car car1 = new Car { BrandId = 20, ColorId = 4, ModelYear = 2019, Description = "Hyundai i20" };
+    Car car2 = new Car { BrandId = 1003, ColorId = 1, DailyPrice = 659, ModelYear = 2020, Description = "R" };
+
+   
+
+
+    //carManager.Delete(new Car { CarId=1002});
+    carManager.Add(car1);
+    carManager.Add(car2);
 }
 
+static void GetCarsByBrandId(CarManager carManager)
+{
+    Console.WriteLine("------------------------------");
+    foreach (var car in carManager.GetCarsByBrandId(17))
+    {
+        Console.WriteLine(car.Description);
+    }
+}
 
-
-Car car2 = carManager.GetById(3);
-
-Console.WriteLine(car2.Description);
-
-
+static void GetCrasByColorId(CarManager carManager)
+{
+    Console.WriteLine("------------------------------");
+    foreach (var car in carManager.GetCarsByColorId(4))
+    {
+        Console.WriteLine(car.Description);
+    }
+}
