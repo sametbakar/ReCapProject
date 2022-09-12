@@ -33,8 +33,9 @@ static void CarAdd(CarManager carManager)
 
 static void GetCarsByBrandId(CarManager carManager)
 {
+    var result = carManager.GetCarsByBrandId(17);
     Console.WriteLine("------------------------------");
-    foreach (var car in carManager.GetCarsByBrandId(17))
+    foreach (var car in result.Data)
     {
         Console.WriteLine(car.Description);
     }
@@ -42,8 +43,9 @@ static void GetCarsByBrandId(CarManager carManager)
 
 static void GetCrasByColorId(CarManager carManager)
 {
+    var result = carManager.GetCarsByColorId(4);
     Console.WriteLine("------------------------------");
-    foreach (var car in carManager.GetCarsByColorId(4))
+    foreach (var car in result.Data)
     {
         Console.WriteLine(car.Description);
     }
@@ -51,8 +53,10 @@ static void GetCrasByColorId(CarManager carManager)
 
 static void CarDetailTest(CarManager carManager)
 {
-    foreach (var car in carManager.GetCarDetails())
+    var result = carManager.GetCarDetails();
+    foreach (var car in result.Data)
     {
         Console.WriteLine("{0} / {1} / {2}", car.CarName, car.BrandName, car.ColorName);
     }
+    Console.WriteLine(result.Message);
 }
