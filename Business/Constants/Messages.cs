@@ -21,5 +21,12 @@ namespace Business.Constants
 
         public static string RentalNotDelivered = "İade edilmemiş araç olduğundan işlem gerçekleştirilemedi";
         public static string RentalAdded = "Araç kiralama işlemi başarılı";
+
+
+
+        public static string CarImageAdded="Araç görseli eklendi";
+        public static string CarImageUpdated="Araç görseli güncellendi";
+        public static string CarImageDeleted="Araç görseli silindi";
+        public static string CarImageLimitExceeded="Bir araç için eklenebilecek görsel sayısı aşıldığı için ekleme başarısız";
     }
 }
