@@ -71,8 +71,9 @@ namespace Business.Concrete
 
         public IResult Update(IFormFile formFile, CarImage carImage)
         {
-            carImage.ImagePath = _fileHelper.Update(formFile, @"wwwroot\\Uploads\\Images\\" + carImage.ImagePath, @"wwwroot\\Uploads\\Images\\");
-
+            var result = _carImageDal.Get(c => c.Id == carImage.Id);
+            carImage.ImagePath = _fileHelper.Update(formFile, @"wwwroot\\Uploads\\Images\\" + result.ImagePath, @"wwwroot\\Uploads\\Images\\");
+            carImage.Date = DateTime.Now;
             _carImageDal.Update(carImage);
             return new SuccessResult(Messages.CarImageUpdated);
         }
