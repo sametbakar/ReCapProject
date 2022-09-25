@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,20 +20,20 @@ namespace Business.Concrete
         ICarImageDal _carImageDal;
         IFileHelper _fileHelper;
 
-        public CarImageManager(ICarImageDal carImageDal,IFileHelper fileHelper)
+        public CarImageManager(ICarImageDal carImageDal, IFileHelper fileHelper)
         {
             _carImageDal = carImageDal;
             _fileHelper = fileHelper;
         }
 
-        public IResult Add(IFormFile formFile,CarImage carImage)
+        public IResult Add(IFormFile formFile, CarImage carImage)
         {
             IResult result = BusinessRules.Run(CheckIfCarImageLimitExceeded(carImage.CarId));
-            if (result!=null)
+            if (result != null)
             {
                 return result;
             }
-            carImage.ImagePath = _fileHelper.Upload(formFile,@"wwwroot\\Uploads\\Images\\");
+            carImage.ImagePath = _fileHelper.Upload(formFile, @"wwwroot\\Uploads\\Images\\");
             carImage.Date = DateTime.Now;
 
             _carImageDal.Add(carImage);
@@ -52,17 +53,23 @@ namespace Business.Concrete
             return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll());
         }
 
-        public IDataResult<CarImage> GetById(int Id)
+        public IDataResult<CarImage> GetById(int id)
         {
-            return new SuccessDataResult<CarImage>(_carImageDal.Get(c=>c.Id==Id));
+
+            return new SuccessDataResult<CarImage>(_carImageDal.Get(c => c.Id == id));
         }
 
         public IDataResult<List<CarImage>> GetImagesByCarId(int carId)
         {
-            return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll(c=>c.CarId==carId));
+            var result = BusinessRules.Run(CheckIfCarImageAdded(carId));
+            if (result!=null)
+            {
+                return new ErrorDataResult<List<CarImage>>(GetDefaultImage(carId).Data);
+            }
+            return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll(c => c.CarId == carId));
         }
 
-        public IResult Update(IFormFile formFile,CarImage carImage)
+        public IResult Update(IFormFile formFile, CarImage carImage)
         {
             carImage.ImagePath = _fileHelper.Update(formFile, @"wwwroot\\Uploads\\Images\\" + carImage.ImagePath, @"wwwroot\\Uploads\\Images\\");
 
@@ -70,10 +77,25 @@ namespace Business.Concrete
             return new SuccessResult(Messages.CarImageUpdated);
         }
 
-        private IResult CheckIfCarImageLimitExceeded(int? carId)
+        private IResult CheckIfCarImageAdded(int carId)
+        {
+            
+            var result = _carImageDal.GetAll(c => c.CarId == carId);
+            if (result.Count==0)
+            {
+                return new ErrorResult();
+            }
+            return new SuccessResult();
+        }
+        private IDataResult<List<CarImage>> GetDefaultImage(int id)
+        {
+            List<CarImage> car = new List<CarImage> { new CarImage { CarId = id, Date = null, ImagePath = "Default.png" } };
+            return new SuccessDataResult<List<CarImage>>(car);
+        }
+        private IResult CheckIfCarImageLimitExceeded(int carId)
         {
             var result = _carImageDal.GetAll(c => c.CarId == carId);
-            if (result.Count>4)
+            if (result.Count > 4)
             {
                 return new ErrorResult(Messages.CarImageLimitExceeded);
             }
