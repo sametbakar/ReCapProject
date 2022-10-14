@@ -43,14 +43,15 @@ namespace Business.Concrete
 
         public IResult Delete(CarImage carImage)
         {
-            _fileHelper.Delete(@"wwwroot\\Uploads\\Images\\" + carImage.ImagePath);
+            var car = _carImageDal.Get(c => c.Id == carImage.Id);
+            _fileHelper.Delete(@"wwwroot\\Uploads\\Images\\" + car.ImagePath);
             _carImageDal.Delete(carImage);
             return new SuccessResult(Messages.CarImageDeleted);
         }
 
         public IDataResult<List<CarImage>> GetAll()
         {
-            return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll());
+            return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll(),Messages.CarImageListed);
         }
 
         public IDataResult<CarImage> GetById(int id)
@@ -71,8 +72,8 @@ namespace Business.Concrete
 
         public IResult Update(IFormFile formFile, CarImage carImage)
         {
-            var result = _carImageDal.Get(c => c.Id == carImage.Id);
-            carImage.ImagePath = _fileHelper.Update(formFile, @"wwwroot\\Uploads\\Images\\" + result.ImagePath, @"wwwroot\\Uploads\\Images\\");
+            var car = _carImageDal.Get(c => c.Id == carImage.Id);
+            carImage.ImagePath = _fileHelper.Update(formFile, @"wwwroot\\Uploads\\Images\\" + car.ImagePath, @"wwwroot\\Uploads\\Images\\");
             carImage.Date = DateTime.Now;
             _carImageDal.Update(carImage);
             return new SuccessResult(Messages.CarImageUpdated);
