@@ -2,6 +2,7 @@
 
 
 using Business.Concrete;
+using Core.Entities.Concrete;
 using DataAccess.Concrete.EntityFramework;
 using DataAccess.Concrete.InMemory;
 using Entities.Concrete;
@@ -66,8 +67,8 @@ static void CarDetailTest(CarManager carManager)
 
 static void UserAddTest()
 {
-    User user1 = new User { UserFirstName = "Davolio", UserLastName = "Laura", Email = "davalio1234@gmail.com", Password = "1234" };
-    User user2 = new User { UserFirstName = "Pedro", UserLastName = "Afonso", Email = "pedro1234@gmail.com", Password = "1234" };
+    User user1 = new User { FirstName = "Davolio", LastName = "Laura", Email = "davalio1234@gmail.com" };
+    User user2 = new User { FirstName = "Pedro", LastName = "Afonso", Email = "pedro1234@gmail.com" };
 
     UserManager userManager = new UserManager(new EfUserDal());
 

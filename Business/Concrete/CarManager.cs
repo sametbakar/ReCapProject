@@ -10,6 +10,7 @@ using Entities.Concrete;
 using Entities.DTOs;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,9 +44,18 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(),Messages.CarListed);
         }
 
-        public IDataResult<Car> GetById(int userId)
+        public IDataResult<List<CarDetailDto>> GetById(int carId)
         {
-            return new SuccessDataResult<Car>(_carDal.Get(p=>p.CarId==userId),Messages.CarListed);
+            var result = new List<CarDetailDto>();
+            var cars = _carDal.GetCarDetails().ToList();
+            foreach (var car in cars)
+            {
+                if (car.CarId == carId)
+                {
+                    result.Add(car);
+                }
+            }
+            return new SuccessDataResult<List<CarDetailDto>>(result.ToList());
         }
 
         public IDataResult<List<CarDetailDto>> GetCarDetails()
@@ -54,14 +64,32 @@ namespace Business.Concrete
             return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(),Messages.CarListed);
         }
 
-        public IDataResult<List<Car>> GetCarsByBrandId(int BrandId)
+        public IDataResult<List<CarDetailDto>> GetCarsByBrandId(int brandId)
         {
-            return new SuccessDataResult<List<Car>>(_carDal.GetAll(p => p.BrandId == BrandId).ToList());
+            var result = new List<CarDetailDto>();
+            var cars = _carDal.GetCarDetails().ToList();
+            foreach (var car in cars)
+            {
+                if (car.BrandId == brandId)
+                {
+                    result.Add(car);
+                }
+            }
+            return new SuccessDataResult<List<CarDetailDto>>(result.ToList());
         }
 
-        public IDataResult<List<Car>> GetCarsByColorId(int ColorId)
+        public IDataResult<List<CarDetailDto>> GetCarsByColorId(int colorId)
         {
-            return new SuccessDataResult<List<Car>>(_carDal.GetAll(p => p.ColorId == ColorId).ToList());
+            var result = new List<CarDetailDto>();
+            var cars = _carDal.GetCarDetails().ToList();
+            foreach (var car in cars)
+            {
+                if (car.ColorId==colorId)
+                {
+                    result.Add(car);
+                }
+            }
+            return new SuccessDataResult<List<CarDetailDto>>(result.ToList());
         }
 
         [ValidationAspect(typeof(CarValidator))]
